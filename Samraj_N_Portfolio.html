@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samraj.N | Game Developer</title>
+<meta name="description" content="Samraj.N — Game Developer Portfolio — Unity, Unreal Engine, C++, C#, Gameplay Programming">
+
+<!-- Press Start 2P for pixel/arcade headings, Space Grotesk for body, JetBrains Mono for data -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* =====================================================
+   TOKENS — "Arcade Garage" theme:
+   deep asphalt navy + CRT amber/teal, scanline texture
+   ===================================================== */
+:root{
+  --bg:#0E1116;
+  --bg-panel:#161B24;
+  --bg-panel-2:#1C2330;
+  --border:rgba(255,255,255,0.08);
+  --amber:#FFB627;
+  --amber-dim:rgba(255,182,39,0.14);
+  --teal:#3DDBC1;
+  --teal-dim:rgba(61,219,193,0.14);
+  --magenta:#FF5D73;
+  --text-hi:#EDEFF3;
+  --text-mid:#9AA3B2;
+  --text-low:#5C6474;
+  --radius:10px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text-hi);
+  font-family:'Space Grotesk',sans-serif;
+  line-height:1.65;
+  position:relative;
+  overflow-x:hidden;
+}
+/* scanline + vignette texture, subtle */
+body::before{
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px);
+}
+body::after{
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(ellipse 90% 70% at 50% 0%, transparent 55%, rgba(0,0,0,0.55) 100%);
+}
+h1,h2,h3,.pixel{font-family:'Press Start 2P',monospace;}
+.mono{font-family:'JetBrains Mono',monospace;}
+::selection{background:var(--amber); color:#0E1116;}
+a{color:inherit; text-decoration:none;}
+ul{list-style:none;}
+img{max-width:100%; display:block;}
+::-webkit-scrollbar{width:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--bg-panel-2); border-radius:10px;}
+::-webkit-scrollbar-thumb:hover{background:var(--amber);}
+
+.container{width:100%; max-width:1100px; margin:0 auto; padding:0 28px;}
+section{position:relative; z-index:1; padding:100px 0;}
+
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--teal);
+  margin-bottom:18px;
+}
+.eyebrow::before{content:'>'; color:var(--amber);}
+.section-title{
+  font-size:clamp(22px,3vw,32px);
+  line-height:1.4;
+  margin-bottom:16px;
+  color:var(--text-hi);
+}
+.section-sub{color:var(--text-mid); max-width:560px; font-size:15.5px; margin-bottom:52px;}
+
+/* =====================================================
+   NAV
+   ===================================================== */
+.navbar{
+  position:fixed; top:0; left:0; right:0; z-index:500;
+  background:rgba(14,17,22,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--border);
+}
+.nav-inner{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 28px; max-width:1100px; margin:0 auto;
+}
+.logo{font-size:14px; letter-spacing:0.05em; color:var(--text-hi);}
+.logo span{color:var(--amber);}
+.nav-links{display:flex; align-items:center; gap:26px;}
+.nav-link{
+  font-size:13px; font-weight:500; letter-spacing:0.02em;
+  color:var(--text-mid); font-family:'JetBrains Mono',monospace;
+  transition:color .2s;
+}
+.nav-link:hover{color:var(--teal);}
+.nav-toggle{display:none;}
+
+/* =====================================================
+   HERO
+   ===================================================== */
+.hero{min-height:100vh; display:flex; align-items:center; padding-top:90px;}
+.hero-inner{width:100%;}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace; font-size:13px;
+  color:var(--magenta); letter-spacing:0.15em; text-transform:uppercase;
+  margin-bottom:22px;
+}
+.hero-title{
+  font-size:clamp(28px,5.5vw,52px);
+  line-height:1.35;
+  letter-spacing:0.01em;
+  margin-bottom:22px;
+}
+.hero-title .accent{color:var(--amber);}
+.hero-desc{color:var(--text-mid); max-width:600px; font-size:17px; margin-bottom:36px;}
+.hero-actions{display:flex; gap:16px; flex-wrap:wrap; margin-bottom:56px;}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:14px 26px; border-radius:6px;
+  font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+  letter-spacing:0.03em; text-transform:uppercase;
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+  border:2px solid transparent;
+}
+.btn-primary{background:var(--amber); color:#0E1116; box-shadow:4px 4px 0 var(--teal);}
+.btn-primary:hover{transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--teal);}
+.btn-ghost{border-color:var(--border); color:var(--text-hi);}
+.btn-ghost:hover{border-color:var(--teal); color:var(--teal);}
+
+.hero-stats{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:20px;
+  border-top:1px solid var(--border); padding-top:32px;
+}
+.stat-num{font-size:26px; font-weight:700; color:var(--amber); font-family:'JetBrains Mono',monospace;}
+.stat-label{font-size:12px; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
+
+/* =====================================================
+   ABOUT
+   ===================================================== */
+.about-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:60px; align-items:start;}
+.about-text p{color:var(--text-mid); font-size:16px; margin-bottom:18px;}
+.about-text strong{color:var(--text-hi);}
+.info-card{
+  background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:26px;
+}
+.info-row{display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px solid var(--border); font-size:14px;}
+.info-row:last-child{border-bottom:none;}
+.info-row .label{color:var(--text-mid); font-family:'JetBrains Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.05em;}
+.info-row .value{color:var(--text-hi); font-weight:500; text-align:right;}
+
+/* =====================================================
+   SKILLS
+   ===================================================== */
+.skills-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+.skill-card{
+  background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:22px 18px; text-align:center; transition:border-color .2s, transform .2s var(--ease);
+}
+.skill-card:hover{border-color:var(--teal); transform:translateY(-4px);}
+.skill-icon{font-size:22px; margin-bottom:10px;}
+.skill-name{font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--text-hi);}
+.lang-row{display:flex; gap:14px; margin-top:24px;}
+.lang-pill{
+  padding:8px 16px; border-radius:20px; background:var(--teal-dim); color:var(--teal);
+  font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em;
+}
+
+/* =====================================================
+   EDUCATION / TIMELINE
+   ===================================================== */
+.timeline-item{
+  display:grid; grid-template-columns:140px 1fr; gap:28px;
+  padding:26px 0; border-bottom:1px solid var(--border);
+}
+.timeline-item:last-child{border-bottom:none;}
+.tl-date{font-family:'JetBrains Mono',monospace; color:var(--amber); font-size:13px;}
+.tl-org{font-weight:700; font-size:16px; margin-bottom:6px;}
+.tl-desc{color:var(--text-mid); font-size:14.5px;}
+
+/* =====================================================
+   PROJECTS
+   ===================================================== */
+.projects-grid{display:grid; grid-template-columns:1fr 1fr; gap:28px;}
+.project-card{
+  background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+  overflow:hidden; display:flex; flex-direction:column; transition:transform .25s var(--ease), border-color .25s;
+}
+.project-card:hover{transform:translateY(-6px); border-color:var(--amber);}
+.project-banner{
+  height:130px; display:flex; align-items:center; justify-content:center;
+  font-family:'Press Start 2P',monospace; font-size:13px; letter-spacing:0.05em; text-align:center;
+  padding:0 20px; text-shadow:2px 2px 0 rgba(0,0,0,0.6);
+}
+.project-banner.racing{background:linear-gradient(135deg, rgba(43,26,5,0.55), rgba(14,17,22,0.75)), url('assets/racing-1.jpg') center/cover; color:var(--amber);}
+.project-banner.platformer{background:linear-gradient(135deg, rgba(8,32,28,0.55), rgba(14,17,22,0.75)), url('assets/platformer-1.jpg') center/cover; color:var(--teal);}
+.project-body{padding:24px; flex:1; display:flex; flex-direction:column;}
+.project-tag{
+  font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--text-mid); margin-bottom:10px;
+}
+.project-title{font-size:19px; font-weight:700; margin-bottom:12px;}
+.project-desc{color:var(--text-mid); font-size:14.5px; margin-bottom:18px; flex:1;}
+.tech-row{display:flex; flex-wrap:wrap; gap:8px;}
+.tech-pill{
+  font-family:'JetBrains Mono',monospace; font-size:11px; padding:5px 10px; border-radius:5px;
+  background:var(--bg-panel-2); color:var(--text-mid); border:1px solid var(--border);
+}
+.project-card{cursor:pointer;}
+.view-details{
+  margin-top:16px; display:inline-flex; align-items:center; gap:8px;
+  font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.05em; text-transform:uppercase;
+  color:var(--amber);
+}
+.project-card:hover .view-details{color:var(--teal);}
+
+/* =====================================================
+   PROJECT DETAIL MODAL — media section (images + video)
+   ===================================================== */
+.modal-overlay{
+  position:fixed; inset:0; z-index:1000;
+  background:rgba(6,8,11,0.88);
+  display:flex; align-items:center; justify-content:center;
+  padding:32px; opacity:0; visibility:hidden;
+  transition:opacity .3s var(--ease), visibility .3s var(--ease);
+}
+.modal-overlay.open{opacity:1; visibility:visible;}
+.modal-box{
+  width:100%; max-width:880px; max-height:88vh; overflow-y:auto;
+  background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:0; position:relative;
+}
+.modal-close{
+  position:absolute; top:16px; right:16px; z-index:5;
+  width:36px; height:36px; border-radius:8px;
+  background:rgba(14,17,22,0.75); border:1px solid var(--border);
+  color:var(--text-hi); font-size:18px; display:flex; align-items:center; justify-content:center;
+  transition:border-color .2s, color .2s;
+}
+.modal-close:hover{border-color:var(--magenta); color:var(--magenta);}
+
+/* gallery */
+.gallery{position:relative; background:#000;}
+.gallery-track{display:flex; transition:transform .4s var(--ease);}
+.gallery-slide{min-width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.gallery-slide img{width:100%; height:100%; object-fit:cover;}
+.media-placeholder{
+  width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  background:repeating-linear-gradient(135deg, var(--bg-panel-2) 0 18px, var(--bg) 18px 36px);
+  color:var(--text-mid); font-family:'JetBrains Mono',monospace; font-size:12px; text-align:center; padding:20px;
+}
+.media-placeholder .icon{font-size:28px; color:var(--amber);}
+.gallery-nav{
+  position:absolute; top:50%; transform:translateY(-50%); z-index:5;
+  width:38px; height:38px; border-radius:50%; background:rgba(14,17,22,0.75); border:1px solid var(--border);
+  color:var(--text-hi); display:flex; align-items:center; justify-content:center; font-size:16px;
+}
+.gallery-nav:hover{border-color:var(--teal); color:var(--teal);}
+.gallery-prev{left:14px;} .gallery-next{right:14px;}
+.gallery-counter{
+  position:absolute; bottom:14px; right:14px; z-index:5;
+  background:rgba(14,17,22,0.75); border:1px solid var(--border); border-radius:20px;
+  padding:5px 14px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-hi);
+}
+.gallery-dots{position:absolute; bottom:16px; left:16px; z-index:5; display:flex; gap:6px;}
+.gallery-dot{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.3);}
+.gallery-dot.active{background:var(--amber);}
+
+.modal-video-block{padding:24px 28px 0;}
+.modal-video-wrap{aspect-ratio:16/9; border-radius:8px; overflow:hidden; background:#000;}
+.modal-video-wrap video, .modal-video-wrap iframe{width:100%; height:100%; border:0;}
+
+.modal-body{padding:28px;}
+.modal-tag{font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--teal); margin-bottom:8px;}
+.modal-title{font-size:24px; font-weight:700; margin-bottom:14px;}
+.modal-desc{color:var(--text-mid); font-size:15px; margin-bottom:20px;}
+.modal-highlights{margin-bottom:20px;}
+.modal-highlights li{position:relative; padding-left:20px; color:var(--text-mid); font-size:14.5px; margin-bottom:8px;}
+.modal-highlights li::before{content:'▸'; position:absolute; left:0; color:var(--amber);}
+
+/* =====================================================
+   CONTACT
+   ===================================================== */
+.contact-wrap{
+  background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius);
+  padding:48px; display:grid; grid-template-columns:1fr 1fr; gap:48px;
+}
+.contact-item{display:flex; gap:16px; align-items:flex-start; margin-bottom:22px;}
+.contact-icon{
+  width:38px; height:38px; border-radius:8px; background:var(--amber-dim); color:var(--amber);
+  display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+}
+.contact-label{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-mid); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:4px;}
+.contact-value{color:var(--text-hi); font-size:15px; font-weight:500;}
+.form-field{margin-bottom:16px;}
+.form-field label{display:block; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text-mid); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;}
+.form-field input, .form-field textarea{
+  width:100%; background:var(--bg); border:1px solid var(--border); border-radius:6px;
+  padding:12px 14px; color:var(--text-hi); font-family:'Space Grotesk',sans-serif; font-size:14px;
+  transition:border-color .2s;
+}
+.form-field input:focus, .form-field textarea:focus{outline:none; border-color:var(--teal);}
+.form-field textarea{resize:vertical; min-height:90px;}
+
+footer{
+  text-align:center; padding:36px 0; color:var(--text-low); font-size:13px;
+  font-family:'JetBrains Mono',monospace; border-top:1px solid var(--border);
+}
+
+/* =====================================================
+   REVEAL ANIMATION
+   ===================================================== */
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+@media(max-width:860px){
+  .about-grid, .projects-grid, .contact-wrap{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:repeat(2,1fr);}
+  .hero-stats{grid-template-columns:1fr; gap:14px;}
+  .nav-links{display:none;}
+  .timeline-item{grid-template-columns:1fr; gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="logo pixel">SAM<span>RAJ</span></div>
+    <div class="nav-links">
+      <a class="nav-link" href="#about">ABOUT</a>
+      <a class="nav-link" href="#skills">SKILLS</a>
+      <a class="nav-link" href="#education">EDU</a>
+      <a class="nav-link" href="#projects">PROJECTS</a>
+      <a class="nav-link" href="#contact">CONTACT</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-eyebrow">PRESS START ▸ GAME DEVELOPER</div>
+    <h1 class="hero-title">SAMRAJ.N<br><span class="accent">BUILDS PLAYABLE WORLDS</span></h1>
+    <p class="hero-desc">An adaptable game developer who bridges creative concepts with technical execution across Unity and Unreal Engine — turning ideas from pixel-art platformers to stealth mechanics into engaging, playable prototypes.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#projects">▶ VIEW PROJECTS</a>
+      <a class="btn btn-ghost" href="#contact">✉ GET IN TOUCH</a>
+    </div>
+    <div class="hero-stats reveal">
+      <div>
+        <div class="stat-num">2+</div>
+        <div class="stat-label">Playable Prototypes</div>
+      </div>
+      <div>
+        <div class="stat-num">2</div>
+        <div class="stat-label">Engines — Unity / Unreal</div>
+      </div>
+      <div>
+        <div class="stat-num">2025-26</div>
+        <div class="stat-label">Advanced Diploma, In Progress</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="eyebrow">01 / ABOUT</div>
+    <h2 class="section-title">The Player Behind the Code</h2>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>Samraj is a <strong>Game Developer</strong> driven by a passion for gameplay programming, specializing in transforming diverse ideas into engaging, playable prototypes.</p>
+        <p>Work spans <strong>Unity</strong> and <strong>Unreal Engine</strong>, from arcade-style vehicle physics to 2D pixel-art combat systems — with a focus on clean gameplay logic, responsive controls, and readable game feel.</p>
+        <div class="lang-row">
+          <span class="lang-pill">TAMIL</span>
+          <span class="lang-pill">ENGLISH</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <div class="info-row"><span class="label">Role</span><span class="value">Game Developer</span></div>
+        <div class="info-row"><span class="label">Location</span><span class="value">Chennai, India</span></div>
+        <div class="info-row"><span class="label">Phone</span><span class="value">9361704943</span></div>
+        <div class="info-row"><span class="label">Email</span><span class="value">samrajdmass@gmail.com</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills" style="background:var(--bg-panel);">
+  <div class="container">
+    <div class="eyebrow">02 / SKILLS</div>
+    <h2 class="section-title">Loadout</h2>
+    <p class="section-sub">Core tools and languages used to move from prototype to playable build.</p>
+    <div class="skills-grid">
+      <div class="skill-card reveal"><div class="skill-icon">⚙</div><div class="skill-name">C++ / C#</div></div>
+      <div class="skill-card reveal"><div class="skill-icon">◆</div><div class="skill-name">Unreal Engine</div></div>
+      <div class="skill-card reveal"><div class="skill-icon">◈</div><div class="skill-name">Unity</div></div>
+      <div class="skill-card reveal"><div class="skill-icon">◭</div><div class="skill-name">Blender</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="container">
+    <div class="eyebrow">03 / EDUCATION</div>
+    <h2 class="section-title">Training Arc</h2>
+    <div class="timeline-item reveal">
+      <div class="tl-date">2025 — 2026</div>
+      <div>
+        <div class="tl-org">Monolith Research and Training Labs</div>
+        <div class="tl-desc">Advanced Diploma in Game Design and Development</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="background:var(--bg-panel);">
+  <div class="container">
+    <div class="eyebrow">04 / PROJECTS</div>
+    <h2 class="section-title">Featured Builds</h2>
+    <p class="section-sub">Two playable prototypes showcasing gameplay programming across engines.</p>
+    <div class="projects-grid">
+      <div class="project-card reveal" data-project="racing">
+        <div class="project-banner racing">CAR RACING 3D</div>
+        <div class="project-body">
+          <div class="project-tag">Unreal Engine · Racing Prototype</div>
+          <div class="project-title">3D Arcade Racer</div>
+          <p class="project-desc">An action-packed 3D arcade racing prototype featuring spline-based AI opponents, custom vehicle physics, and a real-time gameplay HUD.</p>
+          <div class="tech-row">
+            <span class="tech-pill">Unreal Engine</span>
+            <span class="tech-pill">Vehicle Physics</span>
+            <span class="tech-pill">AI Racers</span>
+            <span class="tech-pill">HUD Systems</span>
+          </div>
+          <div class="view-details">▶ VIEW SCREENSHOTS &amp; VIDEO</div>
+        </div>
+      </div>
+      <div class="project-card reveal" data-project="platformer">
+        <div class="project-banner platformer">2D PLATFORMER</div>
+        <div class="project-body">
+          <div class="project-tag">Unity · Pixel-Art Action</div>
+          <div class="project-title">Fantasy Bow Platformer</div>
+          <p class="project-desc">A 2D pixel-art action platformer featuring precision ranged bow combat, dynamic enemy AI with floating damage text, and physics-driven platforming through vibrant fantasy biomes.</p>
+          <div class="tech-row">
+            <span class="tech-pill">Unity</span>
+            <span class="tech-pill">Enemy AI</span>
+            <span class="tech-pill">Combat Systems</span>
+            <span class="tech-pill">Physics Platforming</span>
+          </div>
+          <div class="view-details">▶ VIEW SCREENSHOTS &amp; VIDEO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="eyebrow">05 / CONTACT</div>
+    <h2 class="section-title">Continue?</h2>
+    <p class="section-sub">Open to game developer roles and collaborations — reach out anytime.</p>
+    <div class="contact-wrap reveal">
+      <div>
+        <div class="contact-item">
+          <div class="contact-icon">☎</div>
+          <div><div class="contact-label">Phone</div><div class="contact-value">9361704943</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div><div class="contact-label">Email</div><div class="contact-value">samrajdmass@gmail.com</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div><div class="contact-label">Location</div><div class="contact-value">School Street, Jawahar Nagar,<br>West Jafferkhanpet, Chennai 600083</div></div>
+        </div>
+      </div>
+      <form id="contactForm">
+        <div class="form-field"><label>Name</label><input type="text" id="cf-name" required></div>
+        <div class="form-field"><label>Email</label><input type="email" id="cf-email" required></div>
+        <div class="form-field"><label>Message</label><textarea id="cf-message" required></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">▶ SEND MESSAGE</button>
+        <p id="cf-note" class="mono" style="color:var(--teal); font-size:12px; margin-top:12px; min-height:16px;"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © <span id="year"></span> SAMRAJ.N — GAME DEVELOPER · ALL RIGHTS RESERVED
+</footer>
+
+<!-- ============================================================
+     PROJECT DETAIL MODAL — separate section for images + video
+     Loaded when a project card is clicked.
+============================================================ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+
+    <div class="gallery">
+      <div class="gallery-track" id="galleryTrack"></div>
+      <button class="gallery-nav gallery-prev" id="galleryPrev">‹</button>
+      <button class="gallery-nav gallery-next" id="galleryNext">›</button>
+      <div class="gallery-dots" id="galleryDots"></div>
+      <div class="gallery-counter" id="galleryCounter">1 / 1</div>
+    </div>
+
+    <div class="modal-video-block" id="modalVideoBlock">
+      <div class="modal-video-wrap" id="modalVideoWrap"></div>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-tag" id="modalTag"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <ul class="modal-highlights" id="modalHighlights"></ul>
+      <div class="tech-row" id="modalTech"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+document.getElementById("contactForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  var name = document.getElementById("cf-name").value.trim();
+  var email = document.getElementById("cf-email").value.trim();
+  var message = document.getElementById("cf-message").value.trim();
+  var body = encodeURIComponent(message + "\n\n— " + name + " (" + email + ")");
+  window.location.href = "mailto:samrajdmass@gmail.com?subject=" + encodeURIComponent("Portfolio contact from " + name) + "&body=" + body;
+  var note = document.getElementById("cf-note");
+  note.textContent = "Opening your email client…";
+  setTimeout(function(){ note.textContent = ""; }, 4000);
+});
+
+/* ============================================================
+   PROJECT DATA — replace the "images" paths with your own
+   screenshot files, and set "video" to a local file path or
+   "youtube" to a YouTube embed URL (e.g. https://www.youtube.com/embed/VIDEO_ID)
+============================================================ */
+var PROJECTS = {
+  racing: {
+    tag: "Unreal Engine · Racing Prototype",
+    title: "3D Arcade Racer",
+    desc: "An action-packed 3D arcade racing prototype built in Unreal Engine, featuring spline-based AI opponents, custom vehicle physics, and a real-time gameplay HUD.",
+    highlights: [
+      "Spline-based AI opponent racing lines",
+      "Custom vehicle physics and handling model",
+      "Real-time HUD — speed, lap, position tracking"
+    ],
+    tech: ["Unreal Engine", "Vehicle Physics", "AI Racers", "HUD Systems"],
+    images: ["CarRacing/CarRacing.png", "CarRacing/CarRacing1.png", "CarRacing/CarRacing2.png"],
+    video: "CarRacing/CarRacingVD.mp4",
+    youtube: ""
+  },
+  platformer: {
+    tag: "Unity · Pixel-Art Action",
+    title: "Fantasy Bow Platformer",
+    desc: "A 2D pixel-art action platformer developed in Unity, featuring precision ranged bow combat, dynamic enemy AI with floating damage text, and physics-driven platforming through vibrant fantasy biomes.",
+    highlights: [
+      "Precision ranged bow combat system",
+      "Dynamic enemy AI with floating damage text",
+      "Physics-driven platforming across fantasy biomes"
+    ],
+    tech: ["Unity", "Enemy AI", "Combat Systems", "Physics Platforming"],
+    images: ["2DPlatfomer/2DPlatfomer.png", "2DPlatfomer/2DPlatfomer1.png", "2DPlatfomer/2DPlatfomer2.png"],
+    video: "2DPlatfomer/2DPlatfomerVD.mp4",
+    youtube: ""
+  }
+};
+
+var modalOverlay = document.getElementById("modalOverlay");
+var modalClose = document.getElementById("modalClose");
+var galleryTrack = document.getElementById("galleryTrack");
+var galleryPrev = document.getElementById("galleryPrev");
+var galleryNext = document.getElementById("galleryNext");
+var galleryCounter = document.getElementById("galleryCounter");
+var galleryDots = document.getElementById("galleryDots");
+var modalVideoBlock = document.getElementById("modalVideoBlock");
+var modalVideoWrap = document.getElementById("modalVideoWrap");
+var modalTag = document.getElementById("modalTag");
+var modalTitle = document.getElementById("modalTitle");
+var modalDesc = document.getElementById("modalDesc");
+var modalHighlights = document.getElementById("modalHighlights");
+var modalTech = document.getElementById("modalTech");
+
+var currentSlide = 0;
+var currentSlideCount = 1;
+
+function buildGallerySlide(src, label){
+  if(src){
+    return '<div class="gallery-slide"><img src="' + src + '" alt="' + label + '" loading="lazy"></div>';
+  }
+  return '<div class="gallery-slide"><div class="media-placeholder"><div class="icon">🖼</div><div>' + label + '<br>Add your screenshot in the PROJECTS data</div></div></div>';
+}
+
+function openProjectModal(id){
+  var proj = PROJECTS[id];
+  if(!proj) return;
+
+  modalTag.textContent = proj.tag;
+  modalTitle.textContent = proj.title;
+  modalDesc.textContent = proj.desc;
+  modalHighlights.innerHTML = proj.highlights.map(function(h){ return "<li>" + h + "</li>"; }).join("");
+  modalTech.innerHTML = proj.tech.map(function(t){ return '<span class="tech-pill">' + t + '</span>'; }).join("");
+
+  var slides = proj.images.length ? proj.images : [null, null];
+  currentSlideCount = slides.length;
+  galleryTrack.innerHTML = slides.map(function(src, i){ return buildGallerySlide(src, "Screenshot " + (i + 1)); }).join("");
+  galleryDots.innerHTML = slides.map(function(_, i){ return '<div class="gallery-dot' + (i === 0 ? " active" : "") + '" data-slide="' + i + '"></div>'; }).join("");
+  currentSlide = 0;
+  updateSlidePosition();
+
+  galleryDots.querySelectorAll(".gallery-dot").forEach(function(dot){
+    dot.addEventListener("click", function(){
+      currentSlide = parseInt(dot.dataset.slide, 10);
+      updateSlidePosition();
+    });
+  });
+
+  if(proj.youtube){
+    modalVideoBlock.style.display = "block";
+    modalVideoWrap.innerHTML = '<iframe src="' + proj.youtube + '" title="' + proj.title + ' video" allowfullscreen loading="lazy"></iframe>';
+  } else if(proj.video){
+    modalVideoBlock.style.display = "block";
+    modalVideoWrap.innerHTML = '<video src="' + proj.video + '" controls preload="none"></video>';
+  } else {
+    modalVideoBlock.style.display = "block";
+    modalVideoWrap.innerHTML = '<div class="media-placeholder" style="border-radius:8px;"><div class="icon">▶</div><div>Gameplay video<br>Set "video" or "youtube" in the PROJECTS data</div></div>';
+  }
+
+  modalOverlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeProjectModal(){
+  modalOverlay.classList.remove("open");
+  document.body.style.overflow = "";
+  var vid = modalVideoWrap.querySelector("video");
+  if(vid) vid.pause();
+}
+
+function updateSlidePosition(){
+  galleryTrack.style.transform = "translateX(-" + (currentSlide * 100) + "%)";
+  galleryCounter.textContent = (currentSlide + 1) + " / " + currentSlideCount;
+  galleryDots.querySelectorAll(".gallery-dot").forEach(function(dot, i){
+    dot.classList.toggle("active", i === currentSlide);
+  });
+}
+
+function nextSlide(){ currentSlide = (currentSlide + 1) % currentSlideCount; updateSlidePosition(); }
+function prevSlide(){ currentSlide = (currentSlide - 1 + currentSlideCount) % currentSlideCount; updateSlidePosition(); }
+
+document.querySelectorAll(".project-card").forEach(function(card){
+  card.addEventListener("click", function(){ openProjectModal(card.dataset.project); });
+});
+modalClose.addEventListener("click", closeProjectModal);
+modalOverlay.addEventListener("click", function(e){ if(e.target === modalOverlay) closeProjectModal(); });
+galleryNext.addEventListener("click", nextSlide);
+galleryPrev.addEventListener("click", prevSlide);
+document.addEventListener("keydown", function(e){
+  if(!modalOverlay.classList.contains("open")) return;
+  if(e.key === "Escape") closeProjectModal();
+  if(e.key === "ArrowRight") nextSlide();
+  if(e.key === "ArrowLeft") prevSlide();
+});
+
+var revealEls = document.querySelectorAll(".reveal");
+var observer = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    if(entry.isIntersecting){ entry.target.classList.add("in"); }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(function(el){ observer.observe(el); });
+</script>
+</body>
+</html>
