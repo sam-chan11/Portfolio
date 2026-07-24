@@ -395,7 +395,7 @@ footer{
         <div class="info-row"><span class="label">Role</span><span class="value">Game Developer</span></div>
         <div class="info-row"><span class="label">Location</span><span class="value">Chennai, India</span></div>
         <div class="info-row"><span class="label">Phone</span><span class="value">9361704943</span></div>
-        <div class="info-row"><span class="label">Email</span><span class="value">samrajdmass@gmail.com</span></div>
+        <div class="info-row"><span class="label">Email</span><span class="value">samraj.monolith@gmail.com</span></div>
       </div>
     </div>
   </div>
@@ -482,17 +482,21 @@ footer{
         </div>
         <div class="contact-item">
           <div class="contact-icon">✉</div>
-          <div><div class="contact-label">Email</div><div class="contact-value">samrajdmass@gmail.com</div></div>
+          <div><div class="contact-label">Email</div><div class="contact-value">samraj.monolith@gmail.com</div></div>
         </div>
         <div class="contact-item">
           <div class="contact-icon">📍</div>
           <div><div class="contact-label">Location</div><div class="contact-value">School Street, Jawahar Nagar,<br>West Jafferkhanpet, Chennai 600083</div></div>
         </div>
       </div>
-      <form id="contactForm">
-        <div class="form-field"><label>Name</label><input type="text" id="cf-name" required></div>
-        <div class="form-field"><label>Email</label><input type="email" id="cf-email" required></div>
-        <div class="form-field"><label>Message</label><textarea id="cf-message" required></textarea></div>
+      <!-- Form submits to Formspree, which forwards submissions to samraj.monolith@gmail.com.
+           Replace YOUR_FORM_ID below with the ID you get from https://formspree.io (free) —
+           see the note at the end of this file for the 2-minute setup. -->
+      <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-field"><label>Name</label><input type="text" id="cf-name" name="name" required></div>
+        <div class="form-field"><label>Email</label><input type="email" id="cf-email" name="email" required></div>
+        <div class="form-field"><label>Message</label><textarea id="cf-message" name="message" required></textarea></div>
+        <input type="hidden" name="_subject" value="New message from portfolio site">
         <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">▶ SEND MESSAGE</button>
         <p id="cf-note" class="mono" style="color:var(--teal); font-size:12px; margin-top:12px; min-height:16px;"></p>
       </form>
@@ -539,14 +543,40 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 document.getElementById("contactForm").addEventListener("submit", function(e){
   e.preventDefault();
-  var name = document.getElementById("cf-name").value.trim();
-  var email = document.getElementById("cf-email").value.trim();
-  var message = document.getElementById("cf-message").value.trim();
-  var body = encodeURIComponent(message + "\n\n— " + name + " (" + email + ")");
-  window.location.href = "mailto:samrajdmass@gmail.com?subject=" + encodeURIComponent("Portfolio contact from " + name) + "&body=" + body;
+  var form = e.target;
   var note = document.getElementById("cf-note");
-  note.textContent = "Opening your email client…";
-  setTimeout(function(){ note.textContent = ""; }, 4000);
+  var submitBtn = form.querySelector("button[type=submit]");
+
+  if(form.action.indexOf("YOUR_FORM_ID") !== -1){
+    note.style.color = "var(--magenta)";
+    note.textContent = "Form not connected yet — set up Formspree first (see instructions in the HTML file).";
+    return;
+  }
+
+  submitBtn.disabled = true;
+  note.style.color = "var(--teal)";
+  note.textContent = "Sending…";
+
+  fetch(form.action, {
+    method: "POST",
+    body: new FormData(form),
+    headers: { "Accept": "application/json" }
+  }).then(function(response){
+    submitBtn.disabled = false;
+    if(response.ok){
+      note.textContent = "Message sent — thanks! I'll get back to you soon.";
+      form.reset();
+    } else {
+      note.style.color = "var(--magenta)";
+      note.textContent = "Something went wrong. Please try again or email me directly.";
+    }
+  }).catch(function(){
+    submitBtn.disabled = false;
+    note.style.color = "var(--magenta)";
+    note.textContent = "Network error. Please try again or email me directly.";
+  });
+
+  setTimeout(function(){ note.textContent = ""; }, 6000);
 });
 
 /* ============================================================
